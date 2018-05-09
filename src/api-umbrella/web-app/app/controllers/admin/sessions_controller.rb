@@ -15,6 +15,9 @@ class Admin::SessionsController < Devise::SessionsController
     }
 
     if current_admin
+      user = ApiUser.where(:email => "web.admin.ajax@internal.apiumbrella").order_by(:created_at.asc).first
+      logger.info("AUTH USER: #{user.inspect}")
+      logger.info("AUTH ALL USERS: #{ApiUser.where(:registration_source => "seed").to_a.inspect}")
       response.merge!({
         "analytics_timezone" => ApiUmbrellaConfig[:analytics][:timezone],
         "enable_beta_analytics" => (ApiUmbrellaConfig[:analytics][:adapter] == "kylin" || (ApiUmbrellaConfig[:analytics][:outputs] && ApiUmbrellaConfig[:analytics][:outputs].include?("kylin"))),
@@ -37,7 +40,7 @@ class Admin::SessionsController < Devise::SessionsController
             "backend_publish" => current_admin.can?("backend_publish"),
           },
         }),
-        "api_key" => ApiUser.where(:email => "web.admin.ajax@internal.apiumbrella").order_by(:created_at.asc).first.api_key,
+        "api_key" => user.api_key,
         "admin_auth_token" => current_admin.authentication_token,
       })
     end

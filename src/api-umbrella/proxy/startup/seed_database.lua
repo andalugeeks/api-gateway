@@ -33,6 +33,7 @@ local function wait_for_mongodb()
 end
 
 local function seed_api_keys()
+  ngx.log(ngx.ERR, "SEED STATIC SITE API KEY: " .. inspect(config["static_site"]["api_key"]))
   local keys = {
     -- static.site.ajax@internal.apiumbrella
     {
@@ -85,6 +86,7 @@ local function seed_api_keys()
   }
 
   for _, data in ipairs(keys) do
+    ngx.log(ngx.ERR, "SEED KEYS DATA: " .. inspect(data))
     local user, user_err = mongo.first("api_users", {
       query = {
         email = data["email"],
@@ -92,6 +94,7 @@ local function seed_api_keys()
       sort = "created_at",
     })
 
+    ngx.log(ngx.ERR, "SEED KEYS USER: " .. inspect(user))
     if user_err then
       ngx.log(ngx.ERR, "failed to query api_users: ", user_err)
       break
@@ -104,6 +107,7 @@ local function seed_api_keys()
       end
       user["updated_at"] = nowMongoDate
 
+      ngx.log(ngx.ERR, "SEED KEYS UPDATE USER: " .. inspect(user))
       local _, update_err = mongo.update("api_users", user["_id"], user)
       if update_err then
         ngx.log(ngx.ERR, "failed to update record in api_users: ", update_err)
@@ -116,6 +120,7 @@ local function seed_api_keys()
       data["created_at"] = nowMongoDate
       data["updated_at"] = nowMongoDate
 
+      ngx.log(ngx.ERR, "SEED KEYS CREATE USER: " .. inspect(data))
       local _, create_err = mongo.create("api_users", data)
       if create_err then
         ngx.log(ngx.ERR, "failed to create record in api_users: ", create_err)
