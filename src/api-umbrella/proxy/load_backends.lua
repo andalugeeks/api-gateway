@@ -53,7 +53,7 @@ local function generate_upstream_config(api)
           -- This is a bit of a hack, but this helps deal with upstream
           -- keepalive connections that might get closed (either by the API
           -- backend or some other firewall or NAT in between).
-           -
+          --
           -- max_fails=0 is important so that single servers don't get
           -- completely removed from rotation (for fail_timeout) if a single
           -- request fails. By repeating the same server IP multiple times,
