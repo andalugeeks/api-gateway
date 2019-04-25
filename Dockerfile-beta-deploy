@@ -50,4 +50,6 @@ RUN set -x && \
   /tmp/install/after-install 1 && \
   rm -rf /tmp/install /var/lib/apt/lists/*
 
+VOLUME /opt/api-umbrella/var/db/
+
 CMD ["api-umbrella", "run"]
